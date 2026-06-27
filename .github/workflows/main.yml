@@ -16,10 +16,14 @@ jobs:
         run: |
           mkdir -p $HOME/toolchains
           cd $HOME/toolchains
-          git clone --depth=1 https://github.com/nickolay-kondratyev/ci-clang-toolchains.git clang || true
+          git clone --depth=1 https://github.com/nickolay-kondratyev/ci-clang-toolchains.git clang || git clone --depth=1 https://github.com/nickolay-kondratyev/ci-clang-toolchains.git clang || true
+          if [ ! -f clang/bin/ld.lld ]; then
+            echo "Cloning LineageOS clang..."
+            git clone --depth=1 -b lineage-22.2 https://github.com/LineageOS/android_prebuilts_clang_kernel_linux-x86_clang-r416183b.git clang || true
+          fi
           git clone --depth=1 https://github.com/LineageOS/android_prebuilts_gcc_linux-x86_aarch64_aarch64-linux-android-4.9.git gcc-aarch64 || true
           git clone --depth=1 https://github.com/LineageOS/android_prebuilts_gcc_linux-x86_arm_arm-linux-androideabi-4.9.git gcc-arm || true
-          ls clang/bin/ld.lld
+          ls clang/bin/ld.lld || ls clang/bin/clang
       - name: Setup KernelSU-Next
         run: |
           cd $GITHUB_WORKSPACE
